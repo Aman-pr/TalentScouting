@@ -488,7 +488,7 @@ This conversation will take approximately 5-10 minutes. Let's begin - could you 
         if uploaded_file and st.button("📄 Parse", use_container_width=True):
             file_bytes = uploaded_file.read()
             file_b64 = base64.b64encode(file_bytes).decode("utf-8")
-            endpoint = "/default/parse/resume" if parse_type == "Resume" else "/parse/jd"
+            endpoint = "/parse/resume" if parse_type == "Resume" else "/parse/jd"
             payload = {"fileName": uploaded_file.name, "fileContent": file_b64}
 
             # Show user message
