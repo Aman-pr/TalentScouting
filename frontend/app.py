@@ -10,7 +10,7 @@ from chat_history import save_chat, load_chat, get_all_chats, delete_chat, new_c
 
 # If running in Docker, we communicate with backend directly on localhost:8000
 # The /api prefix is only for Nginx external routing
-BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
+BACKEND_URL = os.getenv("BACKEND_URL", "https://talent-scouting.vercel.app/")
 
 def format_resume_output(parsed_data):
     """Format resume JSON data as readable text."""
