@@ -8,10 +8,9 @@ import json
 from auth import sign_up, login
 from chat_history import save_chat, load_chat, get_all_chats, delete_chat, new_chat_id
 
-# If running in Docker/Cloud with Nginx, the API is served at /api
-BACKEND_URL = os.getenv("BACKEND_URL", "https://talent-scouting.vercel.app/docs#/default/parse_resume_parse_resume_post")
-if not BACKEND_URL.endswith("/api") and os.getenv("ENVIRONMENT") == "production":
-    BACKEND_URL = BACKEND_URL.rstrip("/") + "/api"
+# If running in Docker, we communicate with backend directly on localhost:8000
+# The /api prefix is only for Nginx external routing
+BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
 
 def format_resume_output(parsed_data):
     """Format resume JSON data as readable text."""
