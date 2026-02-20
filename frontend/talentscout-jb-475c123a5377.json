@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "talentscout-jb",
+  "private_key_id": "475c123a5377a800be61af856e1049ae29e51f7f",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCz5vNpG23+zCnm\nJ3XXXnoDpPQHFIT06+fVPcrof/Qg8OhVgCGo0dfHx8JWxqHGLeVoqYEu+IZnbK0C\nr9b2SQo8hfF+y3bQNUkNxOJuVf/8f7jBplR+VaBZFJrRCCAAWWFXgTIvJmH0ESbv\ni6EAB7xPgHaVQW2LmOp3OVkVYIqv8IvJl3CRuVEtcYiew0sW5fTHC1kVCDRwtb3/\ngZDh/xLOU54y+PJRbqvB7vL22S/zlYVGL14eEtZ86BSPQcWX4HD0hFgWM+fbTj3m\nszXdLrewF4Zl5bMjcw4P/28/OBWaMlRRKD+W8gkXJn05HFR5Lb0Pjo0IcsHHPRZU\noEHtE9WzAgMBAAECggEACbWQM38Ae7znEf3VNU9rBGFVrkAkQNeuhmq0VcH6GgEG\neP7WUjcpDyYvzeEggAKgG/rx9ugA0PojiD6XOmmMvOF5vB8dBXWqwKx8j/niO+1k\nukbQzpSud8BN7rQijgJE56UYYUUQCk0Wrdz6TnccaaoEPF/wmpUhKlgU/7tbIM2i\naHKBYQ3ItSVxqfhHo9NQEIrdJJz4NU0ivhh3jArBtA5KkRrc0QRbzXq18lpnlfr+\nm4LR6yrYtfQBus4qD+EXzHh0bFQj8WedSf+GHGpotlwUHL8MJvtF3OeCZi50OImA\nkjfpjwa81BD7rDhXjtAVP4KrIPGVzz2gI+dsPDEWwQKBgQDsJpNKLIrHE6uERgvN\nxVJTQvba5fwTOj4JUbDGAyGWUX65FI13JxlkQQF8mded2+LtlNNdDUN8EcV+youV\nGmmC4YHBAQtu6OVmOPHEKvP1G5y3eBIY8KmKwYissj6/msrYwMT3LGH0Bgj0pGdc\nDgQAHO21QwqxjxmOe1V0a0YiYQKBgQDDBgkDCNDmYydObm8j2igocED0oa9/ynSE\nmnm/eG3A5eyphfYXE2BwQ5Yk3IKf44stMEdq9Ib7+uXPihfosDCsrSgEY4Cb3atO\nshyh1O7mIlrtjrXvT/86e0+nbnDyepx0kEfLpDn2nCqnHA1cEk8nJ8Jzxe8Qz5gH\n/c1csrUYkwKBgQDRQWl467lZqMNuZYdmIjjOEOOfmvXgr9Zy+ZFUFUg45CQPqvek\nIuBsJvJDUCtw9XzDnAIjTXKESVchACfpysq+MEeDGALil7tW9pS9iHY+tuYK6XnX\n4cHKc65BoXza2jZvFXozsH9n9cUPy3LPbpf65ad53FtodW5nBED39WrjYQKBgQCC\n072f534bz1BC8RpldqeR2Rv5/6z3kRzxB5+8rlESIivM3Szk9f6v0Ocb+0E1eTOY\nMNb4DOmwh/M6cmzvj6JXdCFwMD/KT73noNxMQ8evYkSVMDMkQwn4dVhN/WyPfWkP\nWOqQ1a58nO6QA+WCalXm8mkjuRhSsrBOTBhDoy6ROQKBgAFpAutOemsOp1mPN8Q1\nmEAqQGPcw56IpywyokFBgSkoI81/bGYheR6N2sW5nAthLuOwY/RbSqOC0uo0hxml\nddwDvO+dg6kWoODbWUUR035gI83McFAtBB9HK76aTtpLlJ7SDalFjcborDbqq1zS\nBXOLyVOJBIRKjO5uNX1xQ+Yd\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-fbsvc@talentscout-jb.iam.gserviceaccount.com",
+  "client_id": "109661971804344873734",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-fbsvc%40talentscout-jb.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

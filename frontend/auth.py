@@ -47,6 +47,11 @@ if not firebase_initialized:
 if not firebase_initialized:
     print("WARNING: Firebase not initialized. Authentication features will fail.")
 
+def is_firebase_initialized() -> bool:
+    """Check if Firebase has been successfully initialized."""
+    return firebase_initialized
+
+
 FIREBASE_SIGNUP_URL = f"https://identitytoolkit.googleapis.com/v1/accounts:signUp?key={FIREBASE_API_KEY}"
 FIREBASE_LOGIN_URL = f"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={FIREBASE_API_KEY}"
 

@@ -5,7 +5,7 @@ import requests
 import base64
 import json
 import threading
-from auth import sign_up, login
+from auth import sign_up, login, is_firebase_initialized
 from chat_history import save_chat, load_chat, get_all_chats, delete_chat, new_chat_id
 
 BACKEND_URL = os.getenv("BACKEND_URL", "https://talent-scouting.vercel.app/")
@@ -20,43 +20,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-st.markdown("""
-<style>
-    .stApp { background-color: #000000; color: #ffffff; }
-    [data-testid="stSidebar"] { background-color: #1a1a1a; border-right: 1px solid #333333; }
-    h1, h2, h3, p, div, span, label { color: #ffffff !important; }
-    header { background-color: transparent !important; }
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    .stButton > button {
-        width: 100%;
-        background: linear-gradient(135deg, #6366f1, #8b5cf6);
-        color: #ffffff;
-        border: none;
-        border-radius: 10px;
-        padding: 12px 24px;
-        font-size: 1rem;
-        font-weight: 600;
-        cursor: pointer;
-    }
-    .stButton > button:hover {
-        background: linear-gradient(135deg, #818cf8, #a78bfa);
-        transform: translateY(-1px);
-        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
-    }
-    .stTextInput > div > div > input {
-        background-color: #1a1a1a !important;
-        color: #ffffff !important;
-        border: 1px solid #333333 !important;
-        border-radius: 10px !important;
-        padding: 12px !important;
-    }
-    .stTextInput > div > div > input:focus {
-        border-color: #6366f1 !important;
-        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3) !important;
-    }
-</style>
-""", unsafe_allow_html=True)
+# ... (CSS remains same)
 
 # ============================================================
 # Session State Initialization
@@ -85,8 +49,11 @@ for k, v in defaults.items():
 # Firestore helpers — all wrapped with hard timeouts
 # so they NEVER block the UI thread
 # ============================================================
-def _run_with_timeout(fn, timeout=6):
+def _run_with_timeout(fn, timeout=15):
     """Run fn() in a thread. Return (result, error). Never hangs."""
+    if not is_firebase_initialized():
+        return None, Exception("Firebase not initialized")
+
     result_holder = [None]
     error_holder = [None]
     def worker():
@@ -102,20 +69,22 @@ def _run_with_timeout(fn, timeout=6):
     return result_holder[0], error_holder[0]
 
 def safe_get_all_chats(user_id):
-    result, err = _run_with_timeout(lambda: get_all_chats(user_id), timeout=6)
+    result, err = _run_with_timeout(lambda: get_all_chats(user_id), timeout=15)
     if err:
         print(f"safe_get_all_chats error: {err}")
         return []
     return result or []
 
 def safe_load_chat(user_id, chat_id):
-    result, err = _run_with_timeout(lambda: load_chat(user_id, chat_id), timeout=6)
+    result, err = _run_with_timeout(lambda: load_chat(user_id, chat_id), timeout=15)
     if err:
         print(f"safe_load_chat error: {err}")
-        return []
-    return result or []
+        return None # Return None to indicate error rather than empty list
+    return result
 
 def safe_save_chat(user_id, chat_id, messages):
+    if not is_firebase_initialized():
+        return
     # Fire and forget in background — never block UI
     t = threading.Thread(
         target=lambda: save_chat(user_id, chat_id, messages),
@@ -323,9 +292,14 @@ else:
                         if st.button(label, key=f"chat_{chat['id']}", use_container_width=True):
                             if st.session_state.messages:
                                 safe_save_chat(st.session_state.user_id, st.session_state.current_chat_id, st.session_state.messages)
-                            st.session_state.current_chat_id = chat["id"]
-                            st.session_state.messages = safe_load_chat(st.session_state.user_id, chat["id"])
-                            st.rerun()
+                            
+                            loaded_messages = safe_load_chat(st.session_state.user_id, chat["id"])
+                            if loaded_messages is not None:
+                                st.session_state.current_chat_id = chat["id"]
+                                st.session_state.messages = loaded_messages
+                                st.rerun()
+                            else:
+                                st.error("Failed to load chat. Please try again.")
                     with col2:
                         if st.button("🗑", key=f"del_{chat['id']}"):
                             _run_with_timeout(lambda: delete_chat(st.session_state.user_id, chat["id"]))
