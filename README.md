@@ -87,7 +87,7 @@ The project is optimized to run as a **single unified container** for easy deplo
 2. **Run the Container**:
    Pass your Groq API key and any other relevant env variables:
    ```bash
-   docker run -p 8080:8080 \
+   docker run -p 8000:8000 \
      -e GROQ_API_KEY=your_key_here \
      talentscout-app
    ```
