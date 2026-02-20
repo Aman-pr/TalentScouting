@@ -7,6 +7,10 @@ The system consists of two primary components:
 1. **Backend**: A FastAPI-based REST API that manages conversation state, processes LLM requests using Groq and LangChain, and parses resumes and job descriptions.
 2. **Frontend**: A Streamlit-based web interface providing session management, chat capabilities, and document upload features.
 
+The live link is :
+- **Application UI**: https://talentscouting.onrender.com
+- **Backend API**: https://talent-scouting.vercel.app/
+- **API Docs**: https://talent-scouting.vercel.app/docs
 ## Installation Instructions
 
 ### Prerequisites
@@ -92,10 +96,6 @@ The project is optimized to run as a **single unified container** for easy deplo
      talentscout-app
    ```
 
-The container uses Nginx to serve everything on a **single port**:
-- **Application UI**: http://localhost:8080/
-- **Backend API**: http://localhost:8080/api/
-- **API Docs**: http://localhost:8080/api/docs
 
 ### Pushing to Docker Hub
 
