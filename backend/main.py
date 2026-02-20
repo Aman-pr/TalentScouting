@@ -27,12 +27,10 @@ load_dotenv()
 
 api_key = os.getenv("GROQ_API_KEY")
 app = FastAPI(
-    title="TalentScout AI Hiring Assistant API",
-    description="API for intelligent hiring assistant chatbot and document parsing",
-    version="2.0.0"
+    title="TalentScout Assistant API",
+    version="1.0.0"
 )
 
-# CORS - allow Streamlit frontend to connect
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -42,21 +40,17 @@ app.add_middleware(
 )
 
 
-
 class FileInput(BaseModel):
-    """Request model for file upload"""
     fileName: str
     fileContent: str  
 
 
 class ChatRequest(BaseModel):
-    """Request model for chat interactions"""
     message: str
     conversation_state: Optional[Dict[str, Any]] = None
 
 
 class ChatResponse(BaseModel):
-    """Response model for chat interactions"""
     response: str
     conversation_state: Dict[str, Any]
     candidate_info: Optional[Dict[str, Any]] = None
@@ -66,9 +60,6 @@ class ChatResponse(BaseModel):
 
 
 def get_llm(temperature: float = 0):
-    """
-    Initialize and return the Groq LLM instance.
-    """
     if not api_key:
         raise ValueError("GROQ_API_KEY environment variable not set")
     
@@ -80,16 +71,12 @@ def get_llm(temperature: float = 0):
 
 
 def parse_with_llm(text: str, prompt: str) -> dict:
-    """
-    Generate a JSON response from the LLM based on the provided text and prompt.
-    """
     try:
         llm = get_llm()
         messages = [HumanMessage(content=prompt)]
         response = llm.invoke(messages)
         response_text = response.content.strip()
         
-        # Clean up JSON formatting markers
         if response_text.startswith("```json"):
             response_text = response_text[7:]
         if response_text.startswith("```"):
@@ -103,19 +90,16 @@ def parse_with_llm(text: str, prompt: str) -> dict:
     except json.JSONDecodeError as e:
         raise HTTPException(
             status_code=500,
-            detail=f"Failed to parse LLM response as JSON: {str(e)}"
+            detail=f"Failed to parse response: {str(e)}"
         )
     except Exception as e:
         raise HTTPException(
             status_code=500,
-            detail=f"Error processing with LLM: {str(e)}"
+            detail=f"Error processing: {str(e)}"
         )
 
 
 def get_llm_response(prompt: str, temperature: float = 0.7) -> str:
-    """
-    Get a plain text response from the LLM.
-    """
     try:
         llm = get_llm(temperature=temperature)
         messages = [HumanMessage(content=prompt)]
@@ -124,30 +108,20 @@ def get_llm_response(prompt: str, temperature: float = 0.7) -> str:
     except Exception as e:
         raise HTTPException(
             status_code=500,
-            detail=f"Error getting LLM response: {str(e)}"
+            detail=f"Error getting response: {str(e)}"
         )
 
 
 @app.get("/")
 async def root():
-    """
-    Health check endpoint.
-    """
     return {
-        "message": "TalentScout AI Hiring Assistant API",
-        "endpoints": {
-            "chat": "/chat/hiring",
-            "parse_resume": "/parse/resume",
-            "parse_jd": "/parse/jd"
-        }
+        "status": "online",
+        "endpoints": ["/chat/hiring", "/parse/resume", "/parse/jd"]
     }
 
 
 @app.post("/chat/hiring", response_model=ChatResponse)
 async def chat_hiring(request: ChatRequest):
-    """
-    Handle conversation flow, information extraction, and question generation.
-    """
     try:
         if request.conversation_state:
             state = ConversationManager.restore_conversation(request.conversation_state)
@@ -191,7 +165,7 @@ async def chat_hiring(request: ChatRequest):
                 if extracted_info:
                     state.update_candidate_info(extracted_info)
             except Exception as e:
-                print(f"Info extraction error: {e}")
+                print(f"Extraction error: {e}")
             
             response_prompt = get_conversation_response_prompt(
                 user_message,
@@ -211,18 +185,16 @@ async def chat_hiring(request: ChatRequest):
                     tech_questions = parse_with_llm("", questions_prompt)
                     state.set_tech_questions(tech_questions)
                     
-                    assistant_response = f"Great! I see you're proficient in {', '.join(tech_stack)}. "
-                    assistant_response += "I've prepared some technical questions to assess your skills. "
-                    assistant_response += "Feel free to answer them at your own pace.\n\n"
+                    assistant_response = f"I've prepared some technical questions for your skills in {', '.join(tech_stack)}.\n\n"
                     assistant_response += ConversationManager.format_tech_questions_display(tech_questions)
                     
                     state.stage = "tech_questions"
                     
                 except Exception as e:
-                    assistant_response = "Thank you for sharing your tech stack! Our team will prepare relevant technical questions for you."
-                    print(f"Question generation error: {e}")
+                    assistant_response = "I'll prepare some questions for you shortly."
+                    print(f"Generation error: {e}")
             else:
-                assistant_response = "Could you please share your tech stack (programming languages, frameworks, databases, tools)?"
+                assistant_response = "Could you list your tech stack?"
         
         elif action == "respond":
             response_prompt = get_conversation_response_prompt(
@@ -256,41 +228,35 @@ async def chat_hiring(request: ChatRequest):
     except Exception as e:
         raise HTTPException(
             status_code=500,
-            detail=f"Error in chat processing: {str(e)}"
+            detail=f"Error: {str(e)}"
         )
 
 
 @app.post("/parse/resume")
 async def parse_resume(file_input: FileInput):
-
     try:
         file_bytes = base64.b64decode(file_input.fileContent)
         file_stream = io.BytesIO(file_bytes)
-        
-      
         text = DocumentLoader.process_file(file_stream, file_input.fileName)
         
         if not text:
             raise HTTPException(
                 status_code=400,
-                detail="No text could be extracted from the document"
+                detail="Empty text"
             )
         
         prompt = get_resume_prompt(text)
-        
         parsed_data = parse_with_llm(text, prompt)
-        
         return JSONResponse(content=parsed_data)
         
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error parsing resume: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 
 @app.post("/parse/jd")
 async def parse_jd(file_input: FileInput):
-
     try:
         file_bytes = base64.b64decode(file_input.fileContent)
         file_stream = io.BytesIO(file_bytes)
@@ -299,19 +265,17 @@ async def parse_jd(file_input: FileInput):
         if not text:
             raise HTTPException(
                 status_code=400,
-                detail="No text could be extracted from the document"
+                detail="Empty text"
             )
         
         prompt = get_jd_prompt(text)
         parsed_data = parse_with_llm(text, prompt)
-        
         return JSONResponse(content=parsed_data)
         
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error parsing job description: {str(e)}")
-
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 
 if __name__ == "__main__":

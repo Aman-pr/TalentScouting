@@ -1,5 +1,4 @@
 def get_greeting_prompt() -> str:
-    """Returns the initial greeting message for candidates."""
     return """You are an AI Hiring Assistant for TalentScout, a recruitment agency specializing in technology placements.
 
 Your objective is to conduct an initial candidate screening interview. You will:
@@ -8,7 +7,7 @@ Your objective is to conduct an initial candidate screening interview. You will:
 3. Maintain a professional, conversational tone throughout the interaction
 
 Start by greeting the candidate professionally and clearly explaining:
-- That you are TalentScout's AI Hiring Assistant
+- That you are TalentScout's Hiring Assistant
 - Your purpose is to conduct an initial screening interview
 - You will be collecting their information and asking technical questions
 - The process will take approximately 5-10 minutes
@@ -17,9 +16,6 @@ Keep your greeting professional, clear, and concise (3-4 sentences). Do not use 
 
 
 def get_info_extraction_prompt(user_message: str, conversation_history: str) -> str:
-    """
-    Extract candidate information from their message and return structured JSON.
-    """
     return f"""You are an AI assistant helping to extract candidate information from a conversation.
 
 CONVERSATION HISTORY:
@@ -55,9 +51,6 @@ JSON OUTPUT:"""
 
 
 def get_tech_questions_prompt(tech_stack: list) -> str:
-    """
-    Generate technical questions based on the candidate's tech stack.
-    """
     tech_list = ", ".join(tech_stack)
     
     return f"""You are a technical interviewer for TalentScout. Generate relevant technical questions to assess a candidate's proficiency.
@@ -92,9 +85,6 @@ JSON OUTPUT:"""
 
 
 def get_conversation_response_prompt(user_message: str, conversation_history: str, candidate_info: dict, stage: str) -> str:
-    """
-    Generate contextual responses based on conversation stage and collected information.
-    """
     missing_fields = []
     if not candidate_info.get("full_name"):
         missing_fields.append("full name")
@@ -166,9 +156,6 @@ RESPONSE:"""
 
 
 def get_fallback_prompt(user_message: str) -> str:
-    """
-    Handle unexpected or off-topic inputs.
-    """
     return f"""You are an AI Hiring Assistant for TalentScout. The candidate said something unexpected or off-topic.
 
 USER MESSAGE: {user_message}
@@ -183,9 +170,6 @@ RESPONSE:"""
 
 
 def detect_conversation_ending(user_message: str) -> bool:
-    """
-    Detect if the user wants to end the conversation.
-    """
     ending_keywords = [
         "bye", "goodbye", "exit", "quit", "end", "stop", 
         "that's all", "thats all", "no more", "done", "finish"
@@ -200,9 +184,6 @@ def detect_conversation_ending(user_message: str) -> bool:
 
 
 def get_conclusion_message(candidate_name: str = "there") -> str:
-    """
-    Generate a conclusion message when the conversation ends.
-    """
     name_part = f"{candidate_name}" if candidate_name and candidate_name != "there" else "there"
     
     return f"""Thank you for your time, {name_part}.
