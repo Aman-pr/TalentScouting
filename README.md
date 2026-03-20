@@ -8,6 +8,7 @@ The system consists of two primary components:
 2. **Frontend**: A Streamlit-based web interface providing session management, chat capabilities, and document upload features.
 
 The live link is :
+- **Documentation**: https://drive.google.com/file/d/1fpFOwToBCVhqWp99VraRi8kn5P1Mj2ct/view?usp=drivesdk
 - **Application UI**: https://talentscouting.onrender.com
 - **Backend API**: https://talent-scouting.vercel.app/
 - **API Docs**: https://talent-scouting.vercel.app/docs
